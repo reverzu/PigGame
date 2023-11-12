@@ -6,6 +6,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -19,13 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    RelativeLayout rlLeftPanel, rlRightPanel;
-    Button newGame, rollDice, hold;
-    TextView mainScorePlayer1, mainScorePlayer2, currentScorePlayer1, currentScorePlayer2, winnerBanner;
-    ImageView diceImage;
-    EditText player1NameLabel, player2NameLabel;
+    private RelativeLayout rlLeftPanel, rlRightPanel;
+    private Button newGame, rollDice, hold;
+    private TextView mainScorePlayer1, mainScorePlayer2, currentScorePlayer1, currentScorePlayer2, winnerBanner;
+    private ImageView diceImage;
+    private EditText player1NameLabel, player2NameLabel;
 
-    ObjectAnimator animation_fade_in, animation_fade_out, animation_dice_roll;
+    private ObjectAnimator animation_fade_in, animation_fade_out, animation_dice_roll;
+    private MediaPlayer mediaPlayer;
 
     private int player1MainScore = 0, player2MainScore = 0, player1CurrentScore = 0, player2CurrentScore = 0, imageIndex = 0, rotationDirection = 1;
     private Boolean togglePlayer = false;
@@ -139,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
         player1NameLabel.clearFocus();
         player2NameLabel.clearFocus();
 
+        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.rolling_dice_2);
+//        mediaPlayer.stop();
+//        mediaPlayer.release();
+
         animation_dice_roll = ObjectAnimator.ofFloat(diceImage, "rotation", 0, 360 * 6 * rotationDirection);
 
         rotationDirection = (rotationDirection==1)?(-1):(1);
@@ -155,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         animation_dice_roll.start();
+        mediaPlayer.start();
 
 
         int diceRoll = (int) Math.ceil((Math.random()*10)%6);

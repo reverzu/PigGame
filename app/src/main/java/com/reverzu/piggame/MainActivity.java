@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private RelativeLayout rlLeftPanel, rlRightPanel;
+    private ImageButton toggleSoundOnOff;
     private Button newGame, rollDice, hold;
     private TextView mainScorePlayer1, mainScorePlayer2, currentScorePlayer1, currentScorePlayer2, winnerBanner;
     private ImageView diceImage;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
 
     private int player1MainScore = 0, player2MainScore = 0, player1CurrentScore = 0, player2CurrentScore = 0, imageIndex = 0, rotationDirection = 1;
-    private Boolean togglePlayer = false;
+    private Boolean togglePlayer = false, soundOnOff = true;
     private String player1Name, player2Name;
     private
 
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         rlLeftPanel = (RelativeLayout) findViewById(R.id.rl_player_1);
         rlRightPanel = (RelativeLayout) findViewById(R.id.rl_player_2);
+
+        toggleSoundOnOff = (ImageButton) findViewById(R.id.toggle_sound_on_off);
 
         newGame = (Button) findViewById(R.id.btn_new_game);
         rollDice = (Button) findViewById(R.id.btn_roll_dice);
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         player2NameLabel = (EditText) findViewById(R.id.et_player_2_name);
 
         diceImage = (ImageView) findViewById(R.id.dice_image);
+
+        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.rolling_dice_2);
 
         newGame();
 
@@ -82,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 holdScore();
             }
         });
-
 
     }
 
@@ -141,9 +146,18 @@ public class MainActivity extends AppCompatActivity {
         player1NameLabel.clearFocus();
         player2NameLabel.clearFocus();
 
-        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.rolling_dice_2);
-//        mediaPlayer.stop();
-//        mediaPlayer.release();
+        toggleSoundOnOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(soundOnOff){
+                    toggleSoundOnOff.setBackgroundResource(R.drawable.speaker_off_outline);
+                    soundOnOff = false;
+                } else if (!soundOnOff) {
+                    toggleSoundOnOff.setBackgroundResource(R.drawable.speaker_on_outline);
+                    soundOnOff = true;
+                }
+            }
+        });
 
         animation_dice_roll = ObjectAnimator.ofFloat(diceImage, "rotation", 0, 360 * 6 * rotationDirection);
 
@@ -161,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         animation_dice_roll.start();
-        mediaPlayer.start();
+        if(soundOnOff) {
+            mediaPlayer.start();
+        }
 
 
         int diceRoll = (int) Math.ceil((Math.random()*10)%6);

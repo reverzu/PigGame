@@ -8,6 +8,17 @@
     android:padding="10dp"
     tools:context=".MainActivity">
 
+    <ImageButton
+        android:id="@+id/toggle_sound_on_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/speaker_on_outline"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="1dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -108,9 +119,9 @@
                     android:layout_marginTop="120dp"
                     android:background="@null"
                     android:hint="@string/player_2"
-                    android:textAlignment="center"
                     android:maxLength="10"
                     android:maxLines="1"
+                    android:textAlignment="center"
                     android:textColor="@color/current_score_tile"
                     android:textSize="36sp"
                     android:textStyle="bold" />

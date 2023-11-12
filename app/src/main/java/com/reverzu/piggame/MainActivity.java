@@ -2,6 +2,8 @@ package com.reverzu.piggame;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -23,11 +25,15 @@ public class MainActivity extends AppCompatActivity {
     ImageView diceImage;
     EditText player1NameLabel, player2NameLabel;
 
-    ObjectAnimator animation_fade_in, animation_fade_out;
+    ObjectAnimator animation_fade_in, animation_fade_out, animation_dice_roll;
 
-    int player1MainScore = 0, player2MainScore = 0, player1CurrentScore = 0, player2CurrentScore = 0;
-    Boolean togglePlayer = false;
-    String player1Name, player2Name;
+    private int player1MainScore = 0, player2MainScore = 0, player1CurrentScore = 0, player2CurrentScore = 0, imageIndex = 0, rotationDirection = 1;
+    private Boolean togglePlayer = false;
+    private String player1Name, player2Name;
+    private
+
+    int[] images = {R.drawable.dice1, R.drawable.dice2, R.drawable.dice3, R.drawable.dice4, R.drawable.dice5, R.drawable.dice6};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +138,25 @@ public class MainActivity extends AppCompatActivity {
         diceImage.setVisibility(View.VISIBLE);
         player1NameLabel.clearFocus();
         player2NameLabel.clearFocus();
+
+        animation_dice_roll = ObjectAnimator.ofFloat(diceImage, "rotation", 0, 360 * 6 * rotationDirection);
+
+        rotationDirection = (rotationDirection==1)?(-1):(1);
+
+        animation_dice_roll.setDuration(50);
+        animation_dice_roll.setRepeatCount(6);
+        animation_dice_roll.setRepeatMode(ObjectAnimator.REVERSE);
+        animation_dice_roll.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                diceImage.setImageResource(images[imageIndex]);
+                imageIndex = (imageIndex + 1) % images.length;
+            }
+        });
+
+        animation_dice_roll.start();
+
+
         int diceRoll = (int) Math.ceil((Math.random()*10)%6);
         switch (diceRoll){
             case 1:

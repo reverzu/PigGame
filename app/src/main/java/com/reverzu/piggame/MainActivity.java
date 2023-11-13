@@ -20,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     private RelativeLayout rlLeftPanel, rlRightPanel;
     private ImageButton toggleSoundOnOff;
@@ -146,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
         player1NameLabel.clearFocus();
         player2NameLabel.clearFocus();
 
+        int diceRoll = (int) Math.ceil((Math.random()*10)%6);
+
         toggleSoundOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,46 +176,52 @@ public class MainActivity extends AppCompatActivity {
                 diceImage.setImageResource(images[imageIndex]);
                 imageIndex = (imageIndex + 1) % images.length;
             }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                switch (diceRoll){
+                    case 1:
+                        diceImage.setImageResource(R.drawable.dice1);
+                        break;
+                    case 2:
+                        diceImage.setImageResource(R.drawable.dice2);
+                        break;
+                    case 3:
+                        diceImage.setImageResource(R.drawable.dice3);
+                        break;
+                    case 4:
+                        diceImage.setImageResource(R.drawable.dice4);
+                        break;
+                    case 5:
+                        diceImage.setImageResource(R.drawable.dice5);
+                        break;
+                    case 6:
+                        diceImage.setImageResource(R.drawable.dice6);
+                        break;
+                    default:
+                        break;
+                }
+                if(diceRoll==1){
+                    toggle();
+                }else {
+                    if(!togglePlayer){
+                        player1CurrentScore+=diceRoll;
+                        currentScorePlayer1.setText(player1CurrentScore+"");
+                    }else if(togglePlayer){
+                        player2CurrentScore+=diceRoll;
+                        currentScorePlayer2.setText(player2CurrentScore+"");
+                    }
+                }
+            }
         });
 
         animation_dice_roll.start();
         if(soundOnOff) {
             mediaPlayer.start();
-        }
-
-
-        int diceRoll = (int) Math.ceil((Math.random()*10)%6);
-        switch (diceRoll){
-            case 1:
-                diceImage.setImageResource(R.drawable.dice1);
-                break;
-            case 2:
-                diceImage.setImageResource(R.drawable.dice2);
-                break;
-            case 3:
-                diceImage.setImageResource(R.drawable.dice3);
-                break;
-            case 4:
-                diceImage.setImageResource(R.drawable.dice4);
-                break;
-            case 5:
-                diceImage.setImageResource(R.drawable.dice5);
-                break;
-            case 6:
-                diceImage.setImageResource(R.drawable.dice6);
-                break;
-            default:
-                break;
-        }
-        if(diceRoll==1){
-            toggle();
-        }else {
-            if(!togglePlayer){
-                player1CurrentScore+=diceRoll;
-                currentScorePlayer1.setText(player1CurrentScore+"");
-            }else if(togglePlayer){
-                player2CurrentScore+=diceRoll;
-                currentScorePlayer2.setText(player2CurrentScore+"");
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.seekTo(0);
+                mediaPlayer.start();
             }
         }
     }
